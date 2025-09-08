@@ -131,15 +131,26 @@ setInterval(() => {
             offlineTablets.add(nome);
             tablets[nome].online = false;
             console.log(`🔴 ${nome} offline da ${Math.round(timeDiff/1000)}s`);
+        } else if (timeDiff <= OFFLINE_TIMEOUT && offlineTablets.has(nome)) {
+            offlineTablets.delete(nome);
+            tablets[nome].online = true;
+            console.log(`✅ ${nome} tornato online`);
         }
     });
 }, 30000);
 
-// Health check per Railway
+// Health check con conteggio corretto
 app.get('/health', (req, res) => {
+    const now = new Date();
+    const onlineCount = Object.values(tablets).filter(tablet => {
+        const timeDiff = now - new Date(tablet.timestamp);
+        return timeDiff <= OFFLINE_TIMEOUT;
+    }).length;
+    
     res.json({ 
         status: 'ok', 
-        tablets: Object.keys(tablets).length,
+        tablets: onlineCount, // Solo tablet online
+        total: Object.keys(tablets).length,
         uptime: process.uptime()
     });
 });
