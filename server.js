@@ -14,7 +14,7 @@ let knownTablets = new Set();
 let tabletHistory = {};
 
 // Configurazione
-const OFFLINE_TIMEOUT = 2 * 60 * 1000; // 2 minuti
+const OFFLINE_TIMEOUT = 5 * 60 * 1000; // 5 minuti (stesso del locale)
 const HISTORY_LIMIT = 50;
 
 let users = {
